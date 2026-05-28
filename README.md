@@ -1,10 +1,21 @@
- cd ASSASSIN-CREED
-   
-  
-   npm install
-   
+# Caça-Tesouros - SENAI
 
-   npm run dev
-  
+### Instruções de uso:
 
-4. Abra`http://localhost:5173`
+1. Acesse a pasta do projeto:
+```bash
+cd ASSASSIN-CREED
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Inicie o servidor de desenvolvimento:
+```bash
+npm run dev
+```
+
+4. Abra no seu navegador o endereço:
+http://localhost:5173
