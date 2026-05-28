@@ -1,4 +1,4 @@
-# Caça-Tesouros - SENAI
+
 
 ### Instruções de uso:
 
