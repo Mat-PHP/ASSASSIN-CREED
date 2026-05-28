@@ -1,108 +1,124 @@
-import { useState, useContext } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 'react-leaflet';
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet'; 
 import 'leaflet/dist/leaflet.css';
-import { pontosDeInteresse } from '../data/pontos';
-import { GameContext } from '../context/GameContext';
-import { calcularDistancia } from '../hooks/useGeolocation';
-import L from 'leaflet';
 
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+// Importa todas as suas imagens locais de controle
+import imagemCadeado from '../assets/Cadeado.png';
+import imagemErrado from '../assets/ERRADO.png';
+import imagemCerto from '../assets/Certo.png'; 
 
-// Definição correta do ícone para o Leaflet renderizar no Vite
-let AnimusIcon = L.icon({
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34]
+// CONFIGURAÇÃO DOS ÍCONES EM PIXELS
+const iconeCadeadoPersonalizado = L.icon({
+  iconUrl: imagemCadeado,
+  iconSize: [35, 35],
+  iconAnchor: [17, 35],
+  popupAnchor: [0, -32]
 });
 
-function CliqueParaCaminhar({ setPosition }) {
-  useMapEvents({
-    click(e) {
-      setPosition({
-        lat: e.latlng.lat,
-        lng: e.latlng.lng
-      });
-    },
-  });
-  return null;
-}
+const iconeErradoPersonalizado = L.icon({
+  iconUrl: imagemErrado,
+  iconSize: [35, 35],
+  iconAnchor: [17, 35],
+  popupAnchor: [0, -32]
+});
 
-export default function Mapa({ setTelaAtiva, setSelectedPonto }) {
-  const { progresso } = useContext(GameContext);
-  const [position, setPosition] = useState({ lat: -22.9038, lng: -47.0588 });
+const iconeCertoPersonalizado = L.icon({
+  iconUrl: imagemCerto,
+  iconSize: [35, 35],
+  iconAnchor: [17, 35],
+  popupAnchor: [0, -32]
+});
+
+// LISTA DE FASES NO SENAI SÃO BERNARDO
+const PONTOS_REAIS_SENAI = [
+  { id: 1, nome: "FASE 1: SINCRONIZAÇÃO DE MAPAS", lat: -22.9208, lng: -47.0875 },
+  { id: 2, nome: "FASE 2: A REDE DA IRMANDADE", lat: -22.9195, lng: -47.0860 },
+  { id: 3, nome: "FASE 3: FRAGMENTO DE EDEN", lat: -22.9180, lng: -47.0845 }
+];
+
+export default function Mapa({ setTelaAtiva, setSelectedPonto, faseAtual }) {
+  
+  const handleIniciarFase = (ponto) => {
+    setSelectedPonto(ponto);
+    setTelaAtiva('quiz');
+  };
+
+  const centroSenaiSaoBernardo = [-22.9208, -47.0875];
+
+  const historicoPistas = (() => {
+    const salvas = localStorage.getItem('animus_pistas');
+    return salvas ? JSON.parse(salvas) : [];
+  })();
 
   return (
-    <div className="w-full h-screen relative overflow-hidden bg-[#121315]">
+    <div style={{ width: '100%', height: '100%', minHeight: '100vh', position: 'relative' }}>
       
       {/* HUD Superior */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-full max-w-xs px-4">
-        <div className="bg-[#1a0a0a]/90 backdrop-blur-md border border-[#542222] p-3 rounded shadow-xl text-center">
-            <h2 className="text-[#dfd5bd] font-serif font-bold text-xs uppercase tracking-[0.2em]">Sincronização de Mapa</h2>
-            <p className="text-[9px] text-[#ff3b3b] font-mono uppercase mt-0.5 tracking-wider animate-pulse">Fases Liberadas no Setor</p>
-        </div>
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1c1b1a]/95 border border-[#ff3b3b]/40 text-[#dfd5bd] px-6 py-2 rounded shadow-2xl backdrop-blur-sm text-center min-w-[200px] pointer-events-none">
+        <p className="text-[10px] uppercase tracking-widest text-[#ff3b3b] font-bold">Sincronização do Animus</p>
+        <p className="text-sm font-semibold mt-0.5">Sequência Atual: {faseAtual || 1}</p>
       </div>
 
-      {/* Filtro Estilo Animus */}
-      <div className="w-full h-full filter invert-[0.95] hue-rotate-[190deg] saturate-[0.3] brightness-[0.7]">
-        <MapContainer 
-          center={[position.lat, position.lng]} 
-          zoom={16} 
-          className="h-full w-full z-10"
-          zoomControl={false}
-        >
+      <div style={{ width: '100%', height: '100vh', position: 'relative', zIndex: 10 }}>
+        <MapContainer center={centroSenaiSaoBernardo} zoom={16} style={{ width: '100%', height: '100%' }}>
           <TileLayer
+            attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; OpenStreetMap'
           />
 
-          <CliqueParaCaminhar setPosition={setPosition} />
+          {PONTOS_REAIS_SENAI.map((ponto) => {
+            const idFase = ponto.id;
+            const estaBloqueado = idFase > (faseAtual || 1);
 
-          {/* Círculo do Jogador */}
-          <Circle 
-            center={[position.lat, position.lng]} 
-            radius={30} 
-            pathOptions={{ color: '#a81c1c', fillColor: '#a81c1c', fillOpacity: 0.15, weight: 1 }} 
-          />
-          <Circle 
-            center={[position.lat, position.lng]} 
-            radius={6} 
-            pathOptions={{ color: '#dfd5bd', fillColor: '#a81c1c', fillOpacity: 1, weight: 2 }} 
-          />
+            const jaAcertouEstaFase = (faseAtual || 1) > idFase || historicoPistas.some(pista => 
+              pista.texto && pista.texto.includes(`Fase ${idFase} coletada`)
+            );
 
-          {/* Renderização dos Marcadores */}
-          {pontosDeInteresse && pontosDeInteresse.map((ponto) => {
-            const dist = calcularDistancia(position.lat, position.lng, ponto.lat, ponto.lng);
-            const jaResolvido = progresso?.pontosResolvidos?.includes(ponto.id) || false;
-            
-            // Exibe qualquer fase que esteja a menos de 2000m
-            if (dist > 2000 && !jaResolvido) return null;
+            const errouEstaFase = !jaAcertouEstaFase && historicoPistas.some(pista => 
+              pista.texto && (pista.texto.includes(`Falha na Fase ${idFase}`) || pista.texto.includes(`Fase ${idFase}`))
+            );
+
+            let iconeFinal = new L.Icon.Default(); 
+            if (estaBloqueado) iconeFinal = iconeCadeadoPersonalizado; 
+            else if (jaAcertouEstaFase) iconeFinal = iconeCertoPersonalizado; 
+            else if (errouEstaFase) iconeFinal = iconeErradoPersonalizado; 
 
             return (
-              <Marker key={ponto.id} position={[ponto.lat, ponto.lng]} icon={AnimusIcon}>
+              <Marker key={idFase} position={[ponto.lat, ponto.lng]} icon={iconeFinal}>
                 <Popup>
-                  <div className="text-center p-1 min-w-[130px]">
-                    <h3 className="font-bold text-sm text-gray-900 border-b pb-1 mb-1">{ponto.nome}</h3>
-                    <p className="text-[10px] text-gray-600 mb-2">Distância: {Math.round(dist)}m</p>
-                    
-                    {/* Valida a distância do marcador */}
-                    {dist < 1000 || jaResolvido ? (
-                      <button 
-                        onClick={() => {
-                          setSelectedPonto(ponto);
-                          setTelaAtiva('quiz'); // CORREÇÃO: Altera de 'jogo' para 'quiz'
-                        }}
-                        className="w-full bg-red-700 hover:bg-red-800 text-white py-1.5 rounded text-[10px] font-bold tracking-wider uppercase transition-all cursor-pointer"
-                      >
-                        {jaResolvido ? "Rever Pista" : "Desafiar Guardião"}
-                      </button>
-                    ) : (
-                      <div className="p-1 bg-red-50 rounded border border-red-200">
-                          <p className="text-red-600 text-[9px] font-bold uppercase">Muito Longe!</p>
-                          <p className="text-gray-500 text-[8px]">Aproxime-se mais {Math.round(dist - 1000)}m</p>
+                  <div className="p-2 text-center font-sans bg-[#161719] text-[#dfd5bd] rounded min-w-[160px]">
+                    <h3 className="text-sm font-bold text-[#ff3b3b] mb-3">{ponto.nome}</h3>
+
+                    {/* TEXTO REMOVIDO DAQUI */}
+
+                    {estaBloqueado ? (
+                      <div className="flex items-center justify-center gap-1.5 text-[#ff3b3b] font-bold text-xs uppercase bg-[#ff3b3b]/10 py-1.5 px-3 rounded border border-[#ff3b3b]/30 select-none">
+                        <span>Bloqueado</span>
                       </div>
+                    ) : jaAcertouEstaFase ? (
+                      <div className="text-[#5cb85c] font-bold text-xs uppercase bg-[#5cb85c]/10 py-1.5 px-3 rounded border border-[#5cb85c]/20 select-none">
+                        ✓ Sincronizado
+                      </div>
+                    ) : errouEstaFase ? (
+                      <div className="flex flex-col gap-2">
+                        <div className="text-[#ff3b3b] font-bold text-xs uppercase bg-[#ff3b3b]/10 py-1 px-2 rounded border border-[#ff3b3b]/20">
+                          Sincronização Falhou
+                        </div>
+                        <button
+                          onClick={() => handleIniciarFase(ponto)}
+                          className="w-full bg-[#ff3b3b] text-white hover:bg-[#d62828] transition duration-200 py-1.5 rounded text-xs font-bold uppercase tracking-wider cursor-pointer"
+                        >
+                          Tentar Novamente
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleIniciarFase(ponto)}
+                        className="w-full bg-[#1c1b1a] text-[#dfd5bd] hover:bg-[#ff3b3b] hover:text-white border border-[#403f3d] hover:border-[#ff3b3b] transition duration-200 py-1.5 px-3 rounded text-xs font-bold uppercase tracking-wider cursor-pointer"
+                      >
+                        Iniciar Sincronização
+                      </button>
                     )}
                   </div>
                 </Popup>
@@ -112,9 +128,6 @@ export default function Mapa({ setTelaAtiva, setSelectedPonto }) {
         </MapContainer>
       </div>
 
-      <div className="absolute bottom-6 right-4 z-[1000] bg-[#121315]/95 border border-zinc-800 px-3 py-1.5 rounded font-mono text-[9px] text-[#dfd5bd] tracking-widest shadow-2xl">
-        <span className="text-[#ff3b3b]">LAT:</span> {position.lat.toFixed(4)} | <span className="text-[#ff3b3b]">LNG:</span> {position.lng.toFixed(4)}
-      </div>
     </div>
   );
 }
