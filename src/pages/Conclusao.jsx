@@ -1,13 +1,15 @@
 import { useContext } from 'react';
 import { GameContext } from '../context/GameContext';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Se você instalou o framer-motion
+import { motion } from 'framer-motion'; // Deixei importado caso eu queira colocar animações mais complexas depois
 
 export default function Conclusao() {
+  // Puxo a função do context para resetar o jogo quando o jogador recomeçar
   const { limparProgresso } = useContext(GameContext);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-black text-white">
+      {/* Coloquei um emoji temático piscando para dar um clima de Animus/Irmandade */}
       <div className="text-8xl mb-6 animate-pulse">🗡️</div>
       
       <h1 className="text-4xl font-black mb-4 tracking-tighter text-red-400">
@@ -18,6 +20,7 @@ export default function Conclusao() {
         A Irmandade recuperou os fragmentos e o segredo do Animus foi restaurado. O futuro está seguro.
       </p>
       
+      {/* Montei um card com fundo translúcido (glassmorphism) para destacar a frase certa */}
       <div className="bg-white/10 p-6 rounded-2xl border border-white/20 mb-10 backdrop-blur-md">
         <p className="text-xs uppercase font-bold tracking-widest text-gray-300 mb-2">Verdade Final:</p>
         <p className="italic font-serif text-xl text-red-400">
@@ -25,6 +28,7 @@ export default function Conclusao() {
         </p>
       </div>
 
+      {/* Botão de reiniciar. Quando o cara clica, limpo o estado global e volto pra Home */}
       <Link 
         to="/" 
         onClick={limparProgresso}
@@ -33,6 +37,7 @@ export default function Conclusao() {
         REINICIAR A MISSÃO
       </Link>
 
+      {/* Só um rodapé discreto para assinar o meu projeto de fã */}
       <p className="mt-8 text-[10px] opacity-50 uppercase tracking-widest">
         Projeto Front-End adaptado para Assassin's Creed
       </p>
