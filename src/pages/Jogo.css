@@ -67,7 +67,6 @@
 /* Botão de alternativa base */
 .quiz-alternativa-btn {
   width: 100%;
-  text-left: left;
   padding: 0.875rem 1.25rem;
   border-radius: 0.75rem;
   border: 1px solid #403f3d;
