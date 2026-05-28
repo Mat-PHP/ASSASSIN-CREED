@@ -1,0 +1,98 @@
+/* Container base da tela de enigmas */
+.enigma-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #121315;
+  color: #dfd5bd;
+  padding: 2rem;
+}
+
+/* Título principal do cabeçalho */
+.enigma-titulo {
+  font-size: 1.5rem;
+  color: #ff3b3b;
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.25em;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(255, 59, 59, 0.3);
+}
+
+/* Card central contendo a pista enigmática */
+.enigma-card {
+  width: 100%;
+  max-width: 36rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #403f3d;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.enigma-texto {
+  font-size: 1.1rem;
+  color: #ffffff;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0 0 1.5rem 0;
+}
+
+.enigma-dica {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estrutura do formulário e dos inputs */
+.enigma-formulario {
+  width: 100%;
+  max-width: 24rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enigma-input {
+  width: 100%;
+  background-color: #161719;
+  color: #ffffff;
+  border: 2px solid #403f3d;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.enigma-input:focus {
+  border-color: #ff3b3b;
+  box-shadow: 0 0 12px rgba(255, 59, 59, 0.2);
+}
+
+/* Botão de envio/ação do enigma */
+.enigma-btn {
+  width: 100%;
+  background-color: #ff3b3b;
+  color: #ffffff;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.enigma-btn:hover {
+  background-color: #d62828;
+  transform: scale(1.02);
+}
+

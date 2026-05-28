@@ -1,112 +1,59 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { GameContext } from '../context/GameContext';
-import { useNavigate } from 'react-router-dom';
-import { 
-  DndContext, 
-  closestCenter, 
-  KeyboardSensor, 
-  PointerSensor, 
-  useSensor, 
-  useSensors 
-} from '@dnd-kit/core';
-import { 
-  arrayMove, 
-  SortableContext, 
-  sortableKeyboardCoordinates, 
-  verticalListSortingStrategy 
-} from '@dnd-kit/sortable';
-import { SortablePista } from '../components/SortablePista';
+import React, { useState } from 'react';
+import './Enigma.css'; // Importa a folha de estilo separada do enigma
 
-export default function Enigma() {
-  // Puxo o progresso global e a navegação das rotas
-  const { progresso } = useContext(GameContext);
-  const navigate = useNavigate();
-  
-  // Meu estado para controlar a ordem atual dos fragmentos na tela
-  const [items, setItems] = useState([]);
+export default function Enigma({ setTelaAtiva }) {
+  const [resposta, setResposta] = useState('');
 
-  // Assim que entro na tela, pego as pistas que o jogador já coletou
-  useEffect(() => {
-    if (progresso.pistas) {
-      setItems(progresso.pistas);
-    }
-  }, [progresso.pistas]);
-
-  // Configuro os sensores do dnd-kit para aceitar mouse/touch e teclado (acessibilidade)
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  // Função que roda quando o jogador solta o bloco arrastado
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    // Se mudou de lugar, mudo a posição no array usando o helper arrayMove
-    if (active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  }
-
-  // Valido se a frase montada está na ordem correta da Irmandade
-  const verificarSolucao = () => {
-    const solucaoCorreta = ["OS", "ASSASSINOS", "PROTEGEM", "O", "FUTURO", "SEGREDO"];
+  const checarResposta = (e) => {
+    e.preventDefault();
     
-    // Comparo item por item com o meu array gabarito
-    const estaCorreto = items.every((val, index) => val === solucaoCorreta[index]);
+    // Resposta correta fictícia para validação do enigma (mude se necessário)
+    const respostaCorreta = "irmandade"; 
 
-    if (estaCorreto) {
-      navigate('/conclusao'); // Se acertou, vai para o final do jogo
+    if (resposta.trim().toLowerCase() === respostaCorreta) {
+      alert("Enigma Desvendado! Sincronização estabelecida.");
+      setResposta('');
+      setTelaAtiva('mapa'); // Retorna o jogador ao mapa
     } else {
-      alert("A ordem ainda não está correta! Reúna os fragmentos na ordem da Irmandade.");
+      alert("Falha crítica! Código incorreto inserido no Animus.");
     }
   };
 
-  // Trava de segurança: se o jogador não tiver as 6 pistas, nem deixo ele tentar
-  if (items.length < 6) {
-    return (
-      <div className="p-8 text-center mt-20 text-white bg-slate-950 min-h-screen">
-        <h2 className="text-2xl font-bold text-red-400">Memória Trancada</h2>
-        <p className="mt-4 text-gray-300">Você recuperou {items.length} de 6 fragmentos. <br/> Continue no mapa para coletar os restantes.</p>
-        <button onClick={() => navigate('/mapa')} className="mt-6 bg-red-600 text-white px-6 py-2 rounded-full">Voltar ao Mapa</button>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-6 pb-24 bg-slate-950 min-h-screen text-white">
-      <h2 className="text-3xl font-black text-red-400 mb-2">Memória do Animus</h2>
-      <p className="text-gray-300 mb-8">Arraste os fragmentos para revelar a verdade escondida pela Irmandade.</p>
+    <div className="enigma-container select-none">
+      
+      {/* Título Principal */}
+      <h2 className="enigma-titulo font-serif uppercase tracking-widest">
+        Glifos Ocultos
+      </h2>
 
-      {/* Wrapper do dnd-kit injetando as configurações de sensores e colisão */}
-      <DndContext 
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        {/* Contexto do sortable definindo que a ordenação vai ser em lista vertical */}
-        <SortableContext 
-          items={items}
-          strategy={verticalListSortingStrategy}
+      {/* Caixa do Enigma Criptografado */}
+      <div className="enigma-card shadow-2xl">
+        <p className="enigma-texto tracking-wide">
+          "Trabalhamos nas trevas para servir à luz. Juntos formamos a nossa..."
+        </p>
+        <span className="enigma-dica font-sans uppercase tracking-widest">Dica: 9 letras</span>
+      </div>
+
+      {/* Formulário de Input */}
+      <form onSubmit={checarResposta} className="enigma-formulario">
+        <input 
+          type="text"
+          value={resposta}
+          onChange={(e) => setResposta(e.target.value)}
+          placeholder="Decifre o glifo aqui..."
+          className="enigma-input uppercase tracking-wider text-center"
+          required
+        />
+
+        <button 
+          type="submit"
+          className="enigma-btn font-bold uppercase tracking-widest shadow-lg"
         >
-          {/* Renderizo meus componentes customizados que têm os hooks de arrastar */}
-          {items.map(pista => <SortablePista key={pista} id={pista} texto={pista} />)}
-        </SortableContext>
-      </DndContext>
+          Injetar Código
+        </button>
+      </form>
 
-      {/* Botãozão para rodar a minha função de verificação */}
-      <button 
-        onClick={verificarSolucao}
-        className="w-full mt-8 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl active:scale-95 transition-transform"
-      >
-        CONFIRMAR ORDEM
-      </button>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Quiz.css'; // Importa o arquivo de estilos separado do Quiz
 
 // Importa as suas imagens locais de sucesso e falha
 import imagemCerto from '../assets/Certo.png';
@@ -11,13 +12,11 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
   const [mostrarTelaErro, setMostrarTelaErro] = useState(false);
   const [mostrarTelaCerto, setMostrarTelaCerto] = useState(false);
 
-  // Captura o ID da fase atual clicada no mapa (padrão 1 se vier vazio)
+  // Captura o ID da fase atual clicada no mapa
   const idFase = selectedPonto?.id || 1;
   const nomeFase = selectedPonto?.nome || `FASE ${idFase}: DESAFIO DO ANIMUS`;
 
-  // =========================================================================
-  // BANCO DE DADOS DE PERGUNTAS SEPARADAS POR FASE
-  // =========================================================================
+  // BANCO DE DADOS ATUALIZADO PARA AS 5 FASES
   const bancoPerguntas = {
     1: {
       pergunta: "Quem é o protagonista da trilogia clássica baseada na Itália renascentista?",
@@ -51,11 +50,32 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
         { id: "D", texto: "Anel de Eden" },
         { id: "E", texto: "Manto da Sincronização" }
       ]
+    },
+    4: {
+      pergunta: "Qual era a profissão pirata de Edward Kenway antes de se juntar formalmente à Irmandade?",
+      alternativaCorreta: "D",
+      alternativas: [
+        { id: "A", texto: "Navegador de Frota" },
+        { id: "B", texto: "Comerciante de Especiarias" },
+        { id: "C", texto: "Caçador de Recompensas" },
+        { id: "D", texto: "Corsário / Capitão Pirata" },
+        { id: "E", texto: "Almirante da Coroa" }
+      ]
+    },
+    5: {
+      pergunta: "Qual é o nome da máquina de realidade virtual que permite ler as memórias genéticas dos ancestrais?",
+      alternativaCorreta: "E",
+      alternativas: [
+        { id: "A", texto: "Helix" },
+        { id: "B", texto: "Abstergo Core" },
+        { id: "C", texto: "Sentinel" },
+        { id: "D", texto: "Nexus" },
+        { id: "E", texto: "Animus" }
+      ]
     }
   };
 
-  // Carrega os dados da fase atual ou usa a fase 1 como segurança
-  const dadosAtuais = bancoPerguntas[idFase] || bancoPerguntas[1];
+  const dadosAtuais = bancoPerguntas[idFase] || bancoPerguntas;
 
   const validarResposta = (e) => {
     e.preventDefault();
@@ -70,7 +90,6 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
 
       setTimeout(() => {
         setMostrarTelaCerto(false);
-        // Salva o acerto com o texto esperado pelo validador do mapa
         adicionarAcerto(`Fase ${idFase} coletada`);
         setOpcaoSelecionada(null);
         setTelaAtiva('mapa'); 
@@ -98,70 +117,72 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     }
   };
 
+  // TELA DE ACERTO (USANDO CSS ISOLADO)
   if (mostrarTelaCerto) {
     return (
-      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-[#121315]">
-        <img src={imagemCerto} alt="Sucesso" className="w-40 h-40 object-contain mb-6 drop-shadow-[0_0_20px_rgba(92,184,92,0.6)]" />
-        <h2 className="text-2xl font-black uppercase tracking-[0.3em] font-serif text-[#dfd5bd]">SINCRONIZADO</h2>
-        <p className="text-xs text-gray-400 mt-2 uppercase tracking-widest">Sequência de DNA carregada com sucesso</p>
+      <div className="quiz-container feedback-sucesso">
+        <img src={imagemCerto} alt="Sucesso" className="feedback-imagem" />
+        <h2 className="feedback-titulo font-serif">SINCRONIZADO</h2>
+        <p className="feedback-subtitulo uppercase tracking-widest">Sequência de DNA carregada com sucesso</p>
       </div>
     );
   }
 
+  // TELA DE ERRO (USANDO CSS ISOLADO)
   if (mostrarTelaErro) {
     return (
-      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-[#121315] text-[#ff3b3b] animate-pulse">
-        <img src={imagemErrado} alt="Erro" className="w-40 h-40 object-contain mb-6 drop-shadow-[0_0_20px_rgba(255,59,59,0.6)]" />
-        <h2 className="text-2xl font-black uppercase tracking-[0.3em] font-serif">DESSINCRONIZADO</h2>
-        <p className="text-xs text-gray-400 mt-2 uppercase tracking-widest">Tentativa incorreta registrada no sistema</p>
+      <div className="quiz-container feedback-erro status-pulse">
+        <img src={imagemErrado} alt="Erro" className="feedback-imagem" />
+        <h2 className="feedback-titulo-erro font-serif">DESSINCRONIZADO</h2>
+        <p className="feedback-subtitulo uppercase tracking-widest">Tentativa incorreta registrada no sistema</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-[#121315] text-[#dfd5bd] p-6 select-none">
+    <div className="quiz-container select-none">
       
-      <h2 className="text-xl font-bold text-[#ff3b3b] uppercase tracking-[0.2em] mb-4 font-serif">
+      {/* Título da Fase */}
+      <h2 className="quiz-fase-titulo font-serif uppercase tracking-widest">
         {nomeFase}
       </h2>
 
-      <p className="text-xs uppercase tracking-widest text-gray-400 mb-6">
-        Erros nesta fase: <span className="text-[#ff3b3b] font-bold">{tentativasErradas}</span> de 2
+      {/* Contador de Erros */}
+      <p className="quiz-contador uppercase tracking-widest">
+        Erros nesta fase: <span className="contador-destaque">{tentativasErradas}</span> de 2
       </p>
 
-      <div className="w-full max-w-xl bg-black/50 border border-[#403f3d] p-8 rounded-2xl text-center mb-8 shadow-2xl backdrop-blur-md">
-        <p className="text-base text-white tracking-wide leading-relaxed">
+      {/* Caixa da Pergunta */}
+      <div className="quiz-pergunta-card shadow-2xl">
+        <p className="quiz-pergunta-texto tracking-wide">
           {dadosAtuais.pergunta}
         </p>
       </div>
 
-      <div className="w-full max-w-md flex flex-col gap-3 mb-8">
+      {/* Lista de Opções A, B, C, D, E */}
+      <div className="quiz-alternativas-lista">
         {dadosAtuais.alternativas.map((alt) => {
           const estaSelecionada = opcaoSelecionada === alt.id;
           return (
             <button
               key={alt.id}
               onClick={() => setOpcaoSelecionada(alt.id)}
-              className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm tracking-wide transition duration-200 cursor-pointer flex items-center gap-4 ${
-                estaSelecionada 
-                  ? 'bg-[#ff3b3b]/20 border-[#ff3b3b] text-white font-bold shadow-[0_0_15px_rgba(255,59,59,0.2)]' 
-                  : 'bg-[#161719] border-[#403f3d] hover:border-[#ff3b3b]/60 text-[#dfd5bd]'
-              }`}
+              className={`quiz-alternativa-btn ${estaSelecionada ? 'btn-selecionado shadow-lg' : 'btn-padrao'}`}
             >
-              <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                estaSelecionada ? 'bg-[#ff3b3b] text-white' : 'bg-[#121315] border border-[#403f3d] text-[#ff3b3b]'
-              }`}>
+              {/* Círculo com a Letra */}
+              <span className={`alternativa-letra-circulo ${estaSelecionada ? 'letra-selecionada' : 'letra-padrao'}`}>
                 {alt.id}
               </span>
-              <span>{alt.texto}</span>
+              <span className="alternativa-texto">{alt.texto}</span>
             </button>
           );
         })}
       </div>
 
+      {/* Botão de Enviar */}
       <button 
         onClick={validarResposta}
-        className="w-full max-w-md bg-[#ff3b3b] hover:bg-[#d62828] text-white font-bold uppercase tracking-[0.2em] py-4 rounded-xl text-xs transition duration-200 shadow-[0_4px_25px_rgba(255,59,59,0.3)] cursor-pointer"
+        className="quiz-enviar-btn font-bold uppercase tracking-widest shadow-lg"
       >
         Sincronizar Resposta
       </button>

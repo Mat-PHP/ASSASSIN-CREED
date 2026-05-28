@@ -1,0 +1,180 @@
+/* Container base da tela de inventário */
+.inventario-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #121315;
+  color: #dfd5bd;
+  padding: 2rem;
+}
+
+/* Título principal do cabeçalho */
+.inventario-titulo {
+  font-size: 1.5rem;
+  color: #ff3b3b;
+  margin-bottom: 2rem;
+  letter-spacing: 0.25em;
+  text-align: center;
+}
+
+/* Painel de Grid para Estatísticas */
+.inventario-stats-grid {
+  width: 100%;
+  max-width: 32rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.card-acertos {
+  border: 1px solid rgba(92, 184, 92, 0.3);
+}
+
+.card-erros {
+  border: 1px solid rgba(255, 59, 59, 0.3);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin: 0 0 0.5rem 0;
+}
+
+.stat-numero {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card-acertos .stat-numero {
+  color: #5cb85c;
+}
+
+.card-erros .stat-numero {
+  color: #ff3b3b;
+}
+
+/* Seção interna com os registros de texto das pistas */
+.inventario-pistas-secao {
+  width: 100%;
+  max-width: 32rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #403f3d;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.pistas-subtitulo {
+  font-size: 0.875rem;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid rgba(64, 63, 61, 0.5);
+  padding-bottom: 0.5rem;
+}
+
+.pistas-vazio {
+  font-size: 0.815rem;
+  color: #9ca3af;
+  font-style: italic;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.pistas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.pistas-lista::-webkit-scrollbar {
+  width: 4px;
+}
+.pistas-lista::-webkit-scrollbar-thumb {
+  background-color: #403f3d;
+  border-radius: 2px;
+}
+
+.pista-item {
+  background-color: #161719;
+  border-left-color: #ff3b3b;
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pista-icone {
+  color: #ff3b3b;
+  font-size: 0.75rem;
+  margin-top: 0.125rem;
+}
+
+.pista-texto {
+  font-size: 0.815rem;
+  color: #eceff4;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Painel inferior de controle */
+.inventario-botoes-painel {
+  width: 100%;
+  max-width: 32rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-inventario {
+  flex: 1;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-voltar {
+  background-color: #ff3b3b;
+  color: #ffffff;
+}
+
+.btn-voltar:hover {
+  background-color: #d62828;
+}
+
+/* VISUAL CORRIGIDO PARA O BOTÃO RESETAR JOGO */
+.btn-resetar {
+  background-color: #1c1b1a;
+  color: #dfd5bd;
+  border: 1px solid #403f3d;
+}
+
+.btn-resetar:hover {
+  background-color: rgba(255, 59, 59, 0.1);
+  border-color: #ff3b3b;
+  color: #ffffff;
+}

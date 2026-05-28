@@ -1,46 +1,44 @@
-import { useContext } from 'react';
-import { GameContext } from '../context/GameContext';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Deixei importado caso eu queira colocar animações mais complexas depois
+import React from 'react';
+import './Conclusao.css'; // Importa a folha de estilo separada da conclusão
 
-export default function Conclusao() {
-  // Puxo a função do context para resetar o jogo quando o jogador recomeçar
-  const { limparProgresso } = useContext(GameContext);
-
+export default function Conclusao({ setTelaAtiva }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-black text-white">
-      {/* Coloquei um emoji temático piscando para dar um clima de Animus/Irmandade */}
-      <div className="text-8xl mb-6 animate-pulse">🗡️</div>
+    <div className="conclusao-container select-none">
       
-      <h1 className="text-4xl font-black mb-4 tracking-tighter text-red-400">
-        VERDADE REVELADA
-      </h1>
-      
-      <p className="text-lg mb-10 text-gray-200 max-w-xs">
-        A Irmandade recuperou os fragmentos e o segredo do Animus foi restaurado. O futuro está seguro.
-      </p>
-      
-      {/* Montei um card com fundo translúcido (glassmorphism) para destacar a frase certa */}
-      <div className="bg-white/10 p-6 rounded-2xl border border-white/20 mb-10 backdrop-blur-md">
-        <p className="text-xs uppercase font-bold tracking-widest text-gray-300 mb-2">Verdade Final:</p>
-        <p className="italic font-serif text-xl text-red-400">
-          "OS ASSASSINOS PROTEGEM O FUTURO SEGREDO"
+      {/* Ícone de Sucesso */}
+      <div className="conclusao-emblema shadow-2xl">
+        <span className="emblema-icone">✔</span>
+      </div>
+
+      {/* Título Principal */}
+      <h2 className="conclusao-titulo font-serif uppercase tracking-widest">
+        Sincronização Completa
+      </h2>
+
+      {/* Card com a Mensagem de Vitória */}
+      <div className="conclusao-card shadow-2xl">
+        <p className="conclusao-texto tracking-wide">
+          "Parabéns, Assassino! Todas as memórias genéticas foram restauradas e a localização da Maçã do Éden foi assegurada. Você protegeu o futuro da Irmandade."
         </p>
       </div>
 
-      {/* Botão de reiniciar. Quando o cara clica, limpo o estado global e volto pra Home */}
-      <Link 
-        to="/" 
-        onClick={limparProgresso}
-        className="bg-red-600 hover:bg-red-500 text-white px-10 py-4 rounded-full font-black text-lg shadow-[0_10px_20px_rgba(255,0,0,0.2)] transition-all active:scale-95"
-      >
-        REINICIAR A MISSÃO
-      </Link>
+      {/* Painel de Botões */}
+      <div className="conclusao-botoes-painel">
+        <button 
+          onClick={() => setTelaAtiva('home')}
+          className="btn-conclusao btn-reiniciar font-bold uppercase tracking-widest shadow-lg"
+        >
+          Menu Inicial
+        </button>
 
-      {/* Só um rodapé discreto para assinar o meu projeto de fã */}
-      <p className="mt-8 text-[10px] opacity-50 uppercase tracking-widest">
-        Projeto Front-End adaptado para Assassin's Creed
-      </p>
+        <button 
+          onClick={() => setTelaAtiva('creditos')}
+          className="btn-conclusao btn-creditos font-bold uppercase tracking-widest shadow-lg"
+        >
+          Ver Créditos
+        </button>
+      </div>
+
     </div>
   );
 }

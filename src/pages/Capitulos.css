@@ -1,0 +1,117 @@
+/* Container base da tela de capítulos */
+.capitulos-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #121315;
+  color: #dfd5bd;
+  padding: 3rem 2rem;
+}
+
+/* Título principal do cabeçalho */
+.capitulos-titulo {
+  font-size: 1.5rem;
+  color: #ff3b3b;
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.25em;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(255, 59, 59, 0.3);
+}
+
+/* Lista vertical que agrupa os cards */
+.capitulos-lista {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Card base de cada capítulo */
+.capitulo-card {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid #403f3d;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Estado customizado para quando o capítulo está liberado */
+.capitulo-liberado:hover {
+  border-color: rgba(255, 59, 59, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Estado opaco quando o capítulo está bloqueado */
+.capitulo-bloqueado {
+  opacity: 0.4;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Alinhamento superior do título interno e do selo */
+.capitulo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.capitulo-nome {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Selos (Badges) de status */
+.status-badge {
+  font-size: 0.6rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  user-select: none;
+}
+
+.badge-disponivel {
+  color: #5cb85c;
+  background-color: rgba(92, 184, 92, 0.1);
+  border: 1px solid rgba(92, 184, 92, 0.3);
+}
+
+.badge-trancado {
+  color: #ff3b3b;
+  background-color: rgba(255, 59, 59, 0.1);
+  border: 1px solid rgba(255, 59, 59, 0.3);
+}
+
+/* Texto de descrição interna */
+.capitulo-desc {
+  font-size: 0.815rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+/* Botão para entrar direto na fase pelo mapa */
+.capitulo-btn {
+  background-color: #1c1b1a;
+  color: #dfd5bd;
+  border: 1px solid #403f3d;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.capitulo-btn:hover {
+  background-color: #ff3b3b;
+  color: #ffffff;
+  border-color: #ff3b3b;
+}

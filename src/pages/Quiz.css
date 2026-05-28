@@ -1,0 +1,182 @@
+/* Container base da tela de perguntas */
+.quiz-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #121315;
+  color: #dfd5bd;
+  padding: 1.5rem;
+}
+
+/* Título superior do quiz */
+.quiz-fase-titulo {
+  font-size: 1.25rem;
+  color: #ff3b3b;
+  margin-bottom: 1rem;
+  letter-spacing: 0.2em;
+}
+
+/* Contador de tentativas em cima do card */
+.quiz-contador {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  letter-spacing: 0.15em;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.contador-destaque {
+  color: #ff3b3b;
+  font-weight: 700;
+}
+
+/* Card central contendo o texto da pergunta */
+.quiz-pergunta-card {
+  width: 100%;
+  max-width: 36rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #403f3d;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(8px);
+}
+
+.quiz-pergunta-texto {
+  font-size: 1rem;
+  color: #ffffff;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Lista vertical de alternativas de A até E */
+.quiz-alternativas-lista {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Botão de alternativa base */
+.quiz-alternativa-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #403f3d;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+/* Estado normal da opção */
+.btn-padrao {
+  background-color: #161719;
+  color: #dfd5bd;
+}
+
+.btn-padrao:hover {
+  border-color: rgba(255, 59, 59, 0.6);
+}
+
+/* Estado selecionado da opção (Efeito Vermelho) */
+.btn-selecionado {
+  background-color: rgba(255, 59, 59, 0.2);
+  border-color: #ff3b3b;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Círculo indicador com a letra (A, B, C...) */
+.alternativa-letra-circulo {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.letra-padrao {
+  background-color: #121315;
+  border: 1px solid #403f3d;
+  color: #ff3b3b;
+}
+
+.letra-selecionada {
+  background-color: #ff3b3b;
+  color: #ffffff;
+}
+
+/* Botão de confirmação inferior */
+.quiz-enviar-btn {
+  width: 100%;
+  max-width: 28rem;
+  background-color: #ff3b3b;
+  color: #ffffff;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.quiz-enviar-btn:hover {
+  background-color: #d62828;
+}
+
+/* CLASSES DE SUPORTE DAS TELAS DE FEEDBACK (Acerto/Erro) */
+.feedback-imagem {
+  width: 10rem;
+  height: 10rem;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+}
+
+.feedback-titulo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  color: #dfd5bd;
+  margin: 0;
+}
+
+.feedback-titulo-erro {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  color: #ff3b3b;
+  margin: 0;
+}
+
+.feedback-subtitulo {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* Animação pulsante para tela de erro */
+.status-pulse {
+  animation: pulsaCor 2s infinite alternate;
+}
+
+@keyframes pulsaCor {
+  0% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
