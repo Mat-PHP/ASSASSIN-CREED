@@ -3,19 +3,19 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 export function SortablePista({ id, texto }) {
-  /* 
-     Desestruturei o hook useSortable para injetar o comportamento de arrastar.
-     Passei o ID único de cada fragmento para o dnd-kit conseguir rastreá-lo.
-  */
+
+  // Aqui eu estou “ativando” o drag and drop nesse item
+  // O dnd-kit precisa de um ID único pra saber qual peça ele está movendo
   const {
-    attributes,   // Atributos de acessibilidade (como o papel de leitor de tela)
-    listeners,    // Eventos de clique, touch e teclado para iniciar o arrasto
-    setNodeRef,   // Referência que avisa ao dnd-kit qual elemento DOM representa este bloco
-    transform,    // Dados de deslocamento X e Y durante o movimento do arrasto
-    transition,   // Efeito de transição suave quando o bloco volta ou troca de posição
+    attributes,   // coisas de acessibilidade (ajuda teclado e leitor de tela)
+    listeners,    // eventos de arrastar (mouse, touch, teclado)
+    setNodeRef,   // liga esse componente ao elemento real do HTML
+    transform,    // posição enquanto o item está sendo arrastado
+    transition,   // animação suave quando ele muda de lugar
   } = useSortable({ id: id });
 
-  // Converto os dados de transformação do dnd-kit em uma string CSS válida para o estilo em linha
+  // Aqui eu converto o movimento em CSS de verdade
+  // pra conseguir ver o item sendo arrastado na tela
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -23,20 +23,50 @@ export function SortablePista({ id, texto }) {
 
   return (
     <div
+
+      // conecta esse bloco com o sistema de drag and drop
       ref={setNodeRef}
+
+      // aplica a movimentação visual
       style={style}
+
+      // isso aqui deixa o item “arrastável”
       {...attributes}
       {...listeners}
-      /* 
-         Adicionei estilos táteis e visuais (cursor-grab, touch-none) para o arrasto 
-         funcionar perfeitamente tanto no mouse quanto em telas touch de celulares.
-      */
-      className="bg-black/80 p-4 mb-3 rounded-3xl shadow-xl border-2 border-red-700 cursor-grab active:cursor-grabbing flex items-center touch-none hover:border-red-400 transition-colors"
-      /* Configurei o aria-label para leitores de tela explicarem como mover o fragmento pelo teclado */
+
+      // estilo visual do fragmento na tela
+      className="
+        bg-black/80
+        p-4
+        mb-3
+        rounded-3xl
+        shadow-xl
+        border-2
+        border-red-700
+        cursor-grab
+        active:cursor-grabbing
+        flex
+        items-center
+        touch-none
+        hover:border-red-400
+        transition-colors
+      "
+
+      // ajuda leitores de tela a entender o que é esse item
       aria-label={`Fragmento: ${texto}. Use as setas para reordenar.`}
     >
-      <span className="mr-4 text-red-400">🗡️</span>
-      <span className="font-bold text-red-200">{texto}</span>
+
+      {/* ícone só pra dar estilo visual */}
+      <span className="mr-4 text-red-400">
+        🗡️
+      </span>
+
+      {/* texto da pista que o jogador vai organizar */}
+      <span className="font-bold text-red-200">
+        {texto}
+      </span>
+
     </div>
   );
+}
 }
