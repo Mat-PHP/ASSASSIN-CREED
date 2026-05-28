@@ -1,15 +1,15 @@
-// src/data/pontos.js
+
 export const pontosDeInteresse = [
   {
     id: 1,
     nome: "Templo do Animus",
     lat: -22.90583,
     lng: -47.06722,
-    raio: 15,
+    raio: 15, // Raio em metros para validar a proximidade do jogador via GPS
     pergunta: "Qual artefato é símbolo da Irmandade dentro do Templo do Animus?",
     options: ["Lâmina oculta", "Águia dourada", "Cetro de pedra"],
     correct: "Lâmina oculta",
-    pista: "OS",
+    pista: "OS", // Primeira palavra da frase final
     dicaHistorica: "Antiga sede secreta onde os ensinamentos eram guardados."
   },
   {
@@ -21,7 +21,7 @@ export const pontosDeInteresse = [
     pergunta: "Qual mestre lendário protegeu esta catedral antes do Animus?",
     options: ["Ezio", "Altaïr", "Connor"],
     correct: "Altaïr",
-    pista: "ASSASSINOS",
+    pista: "ASSASSINOS", // Segunda palavra da frase final
     dicaHistorica: "Lugar de reuniões escondidas e juramentos solenes."
   },
   {
@@ -33,7 +33,7 @@ export const pontosDeInteresse = [
     pergunta: "Qual símbolo guiava os irmãos até o refúgio?",
     options: ["Marca da águia", "Chama eterna", "Escudo preto"],
     correct: "Marca da águia",
-    pista: "PROTEGEM",
+    pista: "PROTEGEM", // Terceira palavra da frase final
     dicaHistorica: "Base de operações onde planos e segredos eram guardados."
   },
   {
@@ -45,7 +45,7 @@ export const pontosDeInteresse = [
     pergunta: "O Conselho usava esta torre para vigiar o...",
     options: ["Futuro", "Passado", "Tempo"],
     correct: "Futuro",
-    pista: "O",
+    pista: "O", // Quarta palavra da frase final
     dicaHistorica: "Estrutura elevada para observar movimentos inimigos."
   },
   {
@@ -57,7 +57,7 @@ export const pontosDeInteresse = [
     pergunta: "Qual palavra era usada para descrever o próximo fragmento do Animus?",
     options: ["Futuro", "Destino", "Memória"],
     correct: "Futuro",
-    pista: "FUTURO",
+    pista: "FUTURO", // Quinta palavra da frase final
     dicaHistorica: "Centro de comércio onde mensagens codificadas trocavam de mão."
   },
   {
@@ -69,7 +69,7 @@ export const pontosDeInteresse = [
     pergunta: "A Ordem esconde seu segredo em qual palavra antiga?",
     options: ["Liberdade", "Segredo", "Equilíbrio"],
     correct: "Segredo",
-    pista: "SEGREDO",
+    pista: "SEGREDO", // Sexta e última palavra da frase final
     dicaHistorica: "Local onde a confiança entre irmãos era mais sólida."
   }
 ];
