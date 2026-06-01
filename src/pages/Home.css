@@ -1,70 +1,120 @@
-/* Container principal da tela inicial */
+/* --- ESTILOS PARA MOBILE (Telas de Celular) --- */
 .home-container {
   width: 100%;
-  height: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background-color: #121315;
   color: #dfd5bd;
-  padding: 2rem;
+  padding: 3.5rem 1.5rem 2rem;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-/* Título principal do jogo */
+@media (min-width: 768px) {
+  .home-container {
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+}
+
 .home-titulo {
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: 0.25em;
-  text-align: center;
-  color: #ffffff;
-  margin: 0;
-  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-}
-
-/* Subtítulo em vermelho chamativo */
-.home-subtitulo {
-  font-size: 1.875rem;
-  font-weight: 700;
-  letter-spacing: 0.4em;
-  color: #ff3b3b;
-  text-transform: uppercase;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  text-shadow: 0 2px 8px rgba(255, 59, 59, 0.3);
-}
-
-/* Parágrafo de introdução do Animus */
-.home-descricao {
-  max-width: 28rem;
-  text-align: center;
-  font-size: 0.875rem;
-  opacity: 0.7;
-  margin-top: 0;
-  margin-bottom: 3rem;
-  line-height: 1.625;
-}
-
-/* Botão de ação "Jogar" com brilho neon */
-.home-btn-jogar {
-  background-color: #ff3b3b;
-  color: #ffffff;
-  font-size: 0.875rem;
-  text-transform: uppercase;
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1.1;
   letter-spacing: 0.2em;
-  padding: 1rem 3.5rem;
+  text-transform: uppercase;
+  margin: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.home-subtitulo {
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 0.75rem 0 1.5rem;
+  color: #c9b37f;
+}
+
+.home-descricao {
+  max-width: 34rem;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.75;
+  margin: 0 0 2rem;
+  color: #d9cfa9;
+  padding: 0 0.5rem;
+}
+
+.home-btn-jogar {
+  width: 100%;
+  max-width: 18rem;
+  padding: 1rem 1.25rem;
+  background-color: #b91c1c;
+  color: #ffffff;
   border: none;
   border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 0 25px rgba(255, 59, 59, 0.4);
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 30px rgba(185, 28, 28, 0.28);
 }
 
-/* Efeito ao passar o mouse por cima do botão */
-.home-btn-jogar:hover {
-  background-color: #d62828;
-  box-shadow: 0 0 35px rgba(255, 59, 59, 0.6);
-  transform: scale(1.05);
+.home-btn-jogar:hover,
+.home-btn-jogar:focus-visible {
+  background-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.home-btn-jogar:active {
+  transform: scale(0.98);
+}
+
+/* --- ESTILOS PARA TABLET / DESKTOP --- */
+@media (min-width: 768px) {
+  .home-container {
+    padding: 3rem 2rem;
+  }
+
+  .home-titulo {
+    font-size: 3.6rem;
+  }
+
+  .home-subtitulo {
+    font-size: 1.25rem;
+    margin: 1rem 0 2rem;
+  }
+
+  .home-descricao {
+    font-size: 1.05rem;
+    padding: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .home-btn-jogar {
+    max-width: 22rem;
+    font-size: 1rem;
+    padding: 1.15rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-container {
+    padding: 4rem 2.5rem;
+  }
+
+  .home-titulo {
+    font-size: 4.2rem;
+  }
+
+  .home-subtitulo {
+    font-size: 1.4rem;
+  }
 }

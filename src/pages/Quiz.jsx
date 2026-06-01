@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import './Quiz.css'; // Importa o arquivo de estilos separado do Quiz
 
-// Importa as suas imagens locais de sucesso e falha
+// Importa as imagens que mostram feedback de acerto e erro
 import imagemCerto from '../assets/Certo.png';
 import imagemErrado from '../assets/ERRADO.png';
 
 export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adicionarErro }) {
+  // Estado da alternativa escolhida pelo jogador
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
+
+  // Contador de erros nesta fase específica
   const [tentativasErradas, setTentativasErradas] = useState(0);
-  
   const [mostrarTelaErro, setMostrarTelaErro] = useState(false);
   const [mostrarTelaCerto, setMostrarTelaCerto] = useState(false);
 
-  // Captura o ID da fase atual clicada no mapa
+  // Uso o ponto selecionado no mapa para saber em qual fase estamos.
   const idFase = selectedPonto?.id || 1;
   const nomeFase = selectedPonto?.nome || `FASE ${idFase}: DESAFIO DO ANIMUS`;
 
-  // BANCO DE DADOS ATUALIZADO PARA AS 5 FASES
+  // Banco de perguntas para cada fase do quiz.
   const bancoPerguntas = {
     1: {
       pergunta: "Quem é o protagonista da trilogia clássica baseada na Itália renascentista?",
@@ -75,41 +77,43 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     }
   };
 
+  // Pega os dados corretos para a fase atual, ou o banco inteiro se falhar.
   const dadosAtuais = bancoPerguntas[idFase] || bancoPerguntas;
 
   const validarResposta = (e) => {
     e.preventDefault();
 
+    // Se não escolheu opção, aviso o usuário.
     if (!opcaoSelecionada) {
       alert("Por favor, selecione uma alternativa antes de enviar!");
       return;
     }
 
     if (opcaoSelecionada === dadosAtuais.alternativaCorreta) {
+      // Acerto: mostra feedback e volta para o mapa.
       setMostrarTelaCerto(true);
 
       setTimeout(() => {
         setMostrarTelaCerto(false);
         adicionarAcerto(`Fase ${idFase} coletada`);
         setOpcaoSelecionada(null);
-        setTelaAtiva('mapa'); 
+        setTelaAtiva('mapa');
       }, 2000);
 
     } else {
       const totalErros = tentativasErradas + 1;
       setTentativasErradas(totalErros);
-      
       adicionarErro(`Falha na Fase ${idFase}`);
       setMostrarTelaErro(true);
 
       setTimeout(() => {
-        setMostrarTelaErro(false); 
+        setMostrarTelaErro(false);
 
         if (totalErros >= 2) {
           alert("Sincronização Falhou! Você atingiu o limite de 2 erros. Voltando ao mapa.");
           setTentativasErradas(0);
           setOpcaoSelecionada(null);
-          setTelaAtiva('mapa'); 
+          setTelaAtiva('mapa');
         } else {
           alert("Resposta incorreta! O Animus detectou dessincronização. Você tem mais 1 tentativa.");
         }
@@ -117,7 +121,7 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     }
   };
 
-  // TELA DE ACERTO (USANDO CSS ISOLADO)
+  // Se estiver exibindo o feedback de acerto, retorno apenas esse layout.
   if (mostrarTelaCerto) {
     return (
       <div className="quiz-container feedback-sucesso">
@@ -128,7 +132,7 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     );
   }
 
-  // TELA DE ERRO (USANDO CSS ISOLADO)
+  // Se estiver exibindo o feedback de erro, retorno apenas esse layout.
   if (mostrarTelaErro) {
     return (
       <div className="quiz-container feedback-erro status-pulse">
@@ -139,27 +143,17 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     );
   }
 
+  // Layout principal do quiz com pergunta e alternativas.
   return (
     <div className="quiz-container select-none">
-      
-      {/* Título da Fase */}
-      <h2 className="quiz-fase-titulo font-serif uppercase tracking-widest">
-        {nomeFase}
-      </h2>
-
-      {/* Contador de Erros */}
+      <h2 className="quiz-fase-titulo font-serif uppercase tracking-widest">{nomeFase}</h2>
       <p className="quiz-contador uppercase tracking-widest">
         Erros nesta fase: <span className="contador-destaque">{tentativasErradas}</span> de 2
       </p>
-
-      {/* Caixa da Pergunta */}
       <div className="quiz-pergunta-card shadow-2xl">
-        <p className="quiz-pergunta-texto tracking-wide">
-          {dadosAtuais.pergunta}
-        </p>
+        <p className="quiz-pergunta-texto tracking-wide">{dadosAtuais.pergunta}</p>
       </div>
 
-      {/* Lista de Opções A, B, C, D, E */}
       <div className="quiz-alternativas-lista">
         {dadosAtuais.alternativas.map((alt) => {
           const estaSelecionada = opcaoSelecionada === alt.id;
@@ -169,7 +163,6 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
               onClick={() => setOpcaoSelecionada(alt.id)}
               className={`quiz-alternativa-btn ${estaSelecionada ? 'btn-selecionado shadow-lg' : 'btn-padrao'}`}
             >
-              {/* Círculo com a Letra */}
               <span className={`alternativa-letra-circulo ${estaSelecionada ? 'letra-selecionada' : 'letra-padrao'}`}>
                 {alt.id}
               </span>
@@ -179,14 +172,9 @@ export default function Quiz({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
         })}
       </div>
 
-      {/* Botão de Enviar */}
-      <button 
-        onClick={validarResposta}
-        className="quiz-enviar-btn font-bold uppercase tracking-widest shadow-lg"
-      >
+      <button onClick={validarResposta} className="quiz-enviar-btn font-bold uppercase tracking-widest shadow-lg">
         Sincronizar Resposta
       </button>
-
     </div>
   );
 }

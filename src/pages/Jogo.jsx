@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import './Jogo.css'; // Importa a folha de estilo separada com o nome correto do arquivo
 
-// Importa as suas imagens locais de sucesso e falha
+// Importa as imagens de feedback para as telas de resultado.
 import imagemCerto from '../assets/Certo.png';
 import imagemErrado from '../assets/ERRADO.png';
 
 export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adicionarErro }) {
+  // Guarda a alternativa selecionada pelo jogador.
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
   const [tentativasErradas, setTentativasErradas] = useState(0);
-  
+
   const [mostrarTelaErro, setMostrarTelaErro] = useState(false);
   const [mostrarTelaCerto, setMostrarTelaCerto] = useState(false);
 
-  // Identifica qual fase o jogador clicou no mapa
+  // Determina qual fase está ativa com base no ponto selecionado no mapa.
   const idFase = selectedPonto?.id || 1;
   const nomeFase = selectedPonto?.nome || `FASE ${idFase}: DESAFIO DO ANIMUS`;
 
-  // BANCO DE DADOS ATUALIZADO PARA AS 5 FASES DO SENAI
+  // Perguntas configuradas para cada fase do jogo.
   const bancoPerguntas = {
     1: {
       pergunta: "Quem é o protagonista da trilogia clássica baseada na Itália renascentista?",
@@ -92,24 +93,23 @@ export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
         setMostrarTelaCerto(false);
         adicionarAcerto(`Fase ${idFase} coletada`);
         setOpcaoSelecionada(null);
-        setTelaAtiva('mapa'); 
-      }, 500); // 500ms para pular rápido para o mapa!
+        setTelaAtiva('mapa');
+      }, 500); // Pequena pausa antes de voltar ao mapa.
 
     } else {
       const totalErros = tentativasErradas + 1;
       setTentativasErradas(totalErros);
-      
       adicionarErro(`Falha na Fase ${idFase}`);
       setMostrarTelaErro(true);
 
       setTimeout(() => {
-        setMostrarTelaErro(false); 
+        setMostrarTelaErro(false);
 
         if (totalErros >= 2) {
           alert("Sincronização Falhou! Você atingiu o limite de 2 erros. Voltando ao mapa.");
           setTentativasErradas(0);
           setOpcaoSelecionada(null);
-          setTelaAtiva('mapa'); 
+          setTelaAtiva('mapa');
         } else {
           alert("Resposta incorreta! O Animus detectou dessincronização. Você tem mais 1 tentativa.");
         }
@@ -117,7 +117,6 @@ export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     }
   };
 
-  // TELA DE ACERTO AUTOMÁTICO (CHAMA AS CLASSES DO SEU JOGO.CSS)
   if (mostrarTelaCerto) {
     return (
       <div className="quiz-container feedback-sucesso">
@@ -128,7 +127,6 @@ export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
     );
   }
 
-  // TELA DE ERRO AUTOMÁTICO (CHAMA AS CLASSES DO SEU JOGO.CSS)
   if (mostrarTelaErro) {
     return (
       <div className="quiz-container feedback-erro status-pulse">
@@ -141,21 +139,13 @@ export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
 
   return (
     <div className="quiz-container select-none">
-      
-      <h2 className="quiz-fase-titulo font-serif uppercase tracking-widest">
-        {nomeFase}
-      </h2>
-
+      <h2 className="quiz-fase-titulo font-serif uppercase tracking-widest">{nomeFase}</h2>
       <p className="quiz-contador uppercase tracking-widest">
         Erros nesta fase: <span className="contador-destaque">{tentativasErradas}</span> de 2
       </p>
-
       <div className="quiz-pergunta-card shadow-2xl">
-        <p className="quiz-pergunta-texto tracking-wide">
-          {dadosAtuais.pergunta}
-        </p>
+        <p className="quiz-pergunta-texto tracking-wide">{dadosAtuais.pergunta}</p>
       </div>
-
       <div className="quiz-alternativas-lista">
         {dadosAtuais.alternativas.map((alt) => {
           const estaSelecionada = opcaoSelecionada === alt.id;
@@ -173,14 +163,9 @@ export default function Jogo({ selectedPonto, setTelaAtiva, adicionarAcerto, adi
           );
         })}
       </div>
-
-      <button 
-        onClick={validarResposta}
-        className="quiz-enviar-btn font-bold uppercase tracking-widest shadow-lg"
-      >
+      <button onClick={validarResposta} className="quiz-enviar-btn font-bold uppercase tracking-widest shadow-lg">
         Sincronizar Resposta
       </button>
-
     </div>
   );
 }

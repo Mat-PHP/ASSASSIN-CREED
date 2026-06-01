@@ -1,157 +1,195 @@
-import React, { useState } from 'react';
-import Home from './pages/Home';
-import Mapa from './pages/mapa';
-import Inventario from './pages/Inventario';
-import Enigma from './pages/Enigma';
-import Quiz from './pages/Quiz';
-import Conclusao from './pages/Conclusao';
-import Creditos from './pages/Creditos';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import Home from './pages/Home.jsx';
+import Mapa from './pages/mapa.jsx';
+import Inventario from './pages/Inventario.jsx';
+import Creditos from './pages/Creditos.jsx';
+import Quiz from './pages/Quiz.jsx';
+import Jogo from './pages/Jogo.jsx';
+import Capitulos from './pages/Capitulos.jsx';
+import Conclusao from './pages/Conclusao.jsx';
 
 export default function App() {
+  // Estado da tela atual, começa na tela inicial.
   const [telaAtiva, setTelaAtiva] = useState('home');
+
+  // Ponto selecionado no mapa para usar no quiz/jogo.
   const [selectedPonto, setSelectedPonto] = useState(null);
-  
-  const TOTAL_DE_FASES = 5;
 
-  const [faseAtual, setFaseAtual] = useState(() => {
-    const salvo = localStorage.getItem('animus_fase');
-    return salvo ? parseInt(salvo, 10) : 1;
-  });
+  // Controla se o botão Voltar deve ser mostrado apenas em mobile.
+  const [mostrarBotaoMobile, setMostrarBotaoMobile] = useState(false);
 
-  const [acertos, setAcertos] = useState(() => {
-    const salvo = localStorage.getItem('animus_acertos');
-    return salvo ? parseInt(salvo, 10) : 0;
-  });
+  // Guarda o número de acertos e erros persistindo no localStorage.
+  const [acertos, setAcertos] = useState(() => Number(localStorage.getItem('animus_acertos') || 0));
+  const [erros, setErros] = useState(() => Number(localStorage.getItem('animus_erros') || 0));
 
-  const [erros, setErros] = useState(() => {
-    const salvo = localStorage.getItem('animus_erros');
-    return salvo ? parseInt(salvo, 10) : 0;
-  });
-  
+  // Pistas coletadas são gravadas como um array de objetos.
   const [pistasColetadas, setPistasColetadas] = useState(() => {
-    const salvas = localStorage.getItem('animus_pistas');
-    return salvas ? JSON.parse(salvas) : [];
+    const saved = localStorage.getItem('animus_pistas');
+    return saved ? JSON.parse(saved) : [];
   });
 
-  const adicionarAcerto = (pistaTexto) => {
-    setAcertos((prev) => {
-      const novoValor = prev + 1;
-      localStorage.setItem('animus_acertos', novoValor);
-      return novoValor;
-    });
+  // Fase atual do jogador, usada para liberar níveis.
+  const [faseAtual, setFaseAtual] = useState(() => Number(localStorage.getItem('animus_faseAtual') || 1));
 
-    setPistasColetadas((prev) => {
-      const novaLista = [...prev, { id: String(Date.now()), texto: pistaTexto }];
-      localStorage.setItem('animus_pistas', JSON.stringify(novaLista));
-      return novaLista;
-    });
+  // Sempre que acertos mudar, salvo no localStorage.
+  useEffect(() => {
+    localStorage.setItem('animus_acertos', String(acertos));
+  }, [acertos]);
 
-    setFaseAtual((prev) => {
-      const prox = prev + 1;
-      localStorage.setItem('animus_fase', prox);
-      
-      if (prev === TOTAL_DE_FASES) {
-        setTimeout(() => {
-          setTelaAtiva('creditos');
-        }, 500); 
-      }
+  // Sempre que erros mudar, salvo no localStorage.
+  useEffect(() => {
+    localStorage.setItem('animus_erros', String(erros));
+  }, [erros]);
 
-      return prox;
-    });
+  // Sempre que novas pistas forem coletadas, salvo no localStorage.
+  useEffect(() => {
+    localStorage.setItem('animus_pistas', JSON.stringify(pistasColetadas));
+  }, [pistasColetadas]);
+
+  // Salva a fase atual da campanha.
+  useEffect(() => {
+    localStorage.setItem('animus_faseAtual', String(faseAtual));
+  }, [faseAtual]);
+
+  // Exibe o botão móvel de Voltar apenas em telas pequenas.
+  useEffect(() => {
+    const atualizarTamanho = () => setMostrarBotaoMobile(window.innerWidth < 768);
+    atualizarTamanho();
+    window.addEventListener('resize', atualizarTamanho);
+    return () => window.removeEventListener('resize', atualizarTamanho);
+  }, []);
+
+  // Função que adiciona acerto e também guarda a pista coletada.
+  const adicionarAcerto = (texto) => {
+    setAcertos((prev) => prev + 1);
+    setPistasColetadas((prev) => [...prev, { id: Date.now(), texto }]);
+
+    // Se o ponto selecionado for igual ou maior que a fase atual, atualizo para a próxima fase.
+    if (selectedPonto?.id && selectedPonto.id >= faseAtual) {
+      setFaseAtual((prev) => Math.min(5, selectedPonto.id + 1));
+    }
   };
 
-  const adicionarErro = (pistaTexto) => {
-    setErros((prev) => {
-      const novoValor = prev + 1;
-      localStorage.setItem('animus_erros', novoValor);
-      return novoValor;
-    });
-
-    setPistasColetadas((prev) => {
-      const novaLista = [...prev, { id: String(Date.now()), texto: pistaTexto }];
-      localStorage.setItem('animus_pistas', JSON.stringify(novaLista));
-      return novaLista;
-    });
+  // Função que registra erro e também salva como pista no inventário.
+  const adicionarErro = (texto) => {
+    setErros((prev) => prev + 1);
+    setPistasColetadas((prev) => [...prev, { id: Date.now(), texto }]);
   };
 
-  const renderizarTela = () => {
+  // Renderiza a tela correta com base no estado de navegação.
+  const renderTela = () => {
     switch (telaAtiva) {
-      case 'home': 
-        return <Home setTelaAtiva={setTelaAtiva} />;
-      case 'mapa': 
+      case 'mapa':
         return <Mapa setTelaAtiva={setTelaAtiva} setSelectedPonto={setSelectedPonto} faseAtual={faseAtual} />;
-      case 'inventario': 
+      case 'inventario':
         return (
-          <Inventario 
-            acertos={acertos} 
-            erros={erros} 
+          <Inventario
+            acertos={acertos}
+            erros={erros}
             pistasColetadas={pistasColetadas}
             setPistasColetadas={setPistasColetadas}
-            setTelaAtiva={setTelaAtiva} 
-            setAcertos={setAcertos} 
-            setErros={setErros} 
+            setTelaAtiva={setTelaAtiva}
+            setAcertos={setAcertos}
+            setErros={setErros}
             setFaseAtual={setFaseAtual}
           />
         );
-      case 'enigma': 
-        return <Enigma setTelaAtiva={setTelaAtiva} />;
-      case 'quiz': 
+      case 'creditos':
+        return <Creditos setTelaAtiva={setTelaAtiva} />;
+      case 'quiz':
         return (
-          <Quiz 
-            selectedPonto={selectedPonto} 
-            setTelaAtiva={setTelaAtiva} 
-            adicionarAcerto={adicionarAcerto} 
-            adicionarErro={adicionarErro} 
+          <Quiz
+            selectedPonto={selectedPonto}
+            setTelaAtiva={setTelaAtiva}
+            adicionarAcerto={adicionarAcerto}
+            adicionarErro={adicionarErro}
           />
         );
-      case 'conclusao': 
+      case 'jogo':
+        return (
+          <Jogo
+            selectedPonto={selectedPonto}
+            setTelaAtiva={setTelaAtiva}
+            adicionarAcerto={adicionarAcerto}
+            adicionarErro={adicionarErro}
+          />
+        );
+      case 'capitulos':
+        return <Capitulos setTelaAtiva={setTelaAtiva} faseAtual={faseAtual} />;
+      case 'conclusao':
         return <Conclusao setTelaAtiva={setTelaAtiva} />;
-      case 'creditos': 
-        return <Creditos setTelaAtiva={setTelaAtiva} />;
-      default: 
+      default:
         return <Home setTelaAtiva={setTelaAtiva} />;
     }
   };
 
+  // Define para onde o botão Voltar deve mandar no mobile.
+  const voltarTela = telaAtiva === 'quiz' || telaAtiva === 'jogo' ? 'mapa' : 'home';
+
   return (
-    <div className="relative min-h-screen flex bg-[#0c0d0e] text-[#eceff4] overflow-hidden">
-      
-      {/* BARRA LATERAL ATUALIZADA - TEMA TECNOLÓGICO DO ANIMUS */}
-      <aside className="w-28 bg-gradient-to-b from-[#111214] to-[#08090a] border-r-4 border-[#2b2d31] flex flex-col items-center py-6 gap-6 shadow-[5px_0_20px_rgba(0,0,0,0.8)] z-20 shrink-0">
-        <button 
-          onClick={() => setTelaAtiva('home')} 
-          className={`text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer transition-all duration-300 ${telaAtiva === 'home' ? 'text-[#00d2ff] drop-shadow-[0_0_8px_rgba(0,210,255,0.6)]' : 'text-white/60 hover:text-white'}`}
-        >
+    <div className="app-root flex flex-col md:flex-row min-h-screen w-full bg-[#090a0b] text-[#dfd5bd] overflow-x-hidden">
+      {/* Navegação lateral / mobile */}
+      <aside className="app-aside w-full md:w-28 bg-gradient-to-b from-[#111214] to-[#08090a] border-b md:border-b-0 md:border-r border-[#2b2d31] flex flex-row md:flex-col items-center justify-around md:justify-start py-4 md:py-6 md:gap-6 shadow-xl z-30 shrink-0">
+        <button onClick={() => setTelaAtiva('home')} className="font-bold text-xs md:text-sm tracking-widest text-cyan-400 hover:text-white transition-colors uppercase">
           Início
         </button>
-        
-        <button 
-          onClick={() => setTelaAtiva('mapa')} 
-          className={`text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer transition-all duration-300 ${telaAtiva === 'mapa' ? 'text-[#00d2ff] drop-shadow-[0_0_8px_rgba(0,210,255,0.6)]' : 'text-white/60 hover:text-white'}`}
-        >
+        <button onClick={() => setTelaAtiva('mapa')} className="font-bold text-xs md:text-sm tracking-widest hover:text-white transition-colors uppercase">
           Mapa
         </button>
-        
-        <button 
-          onClick={() => setTelaAtiva('inventario')} 
-          className={`text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer transition-all duration-300 ${telaAtiva === 'inventario' ? 'text-[#00d2ff] drop-shadow-[0_0_8px_rgba(0,210,255,0.6)]' : 'text-white/60 hover:text-white'}`}
-        >
+        <button onClick={() => setTelaAtiva('inventario')} className="font-bold text-xs md:text-sm tracking-widest hover:text-white transition-colors uppercase">
           Inventário
         </button>
-
-        <button 
-          onClick={() => setTelaAtiva('creditos')} 
-          className={`text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer transition-all duration-300 ${telaAtiva === 'creditos' ? 'text-[#00d2ff] drop-shadow-[0_0_8px_rgba(0,210,255,0.6)]' : 'text-white/60 hover:text-white'}`}
-        >
+        <button onClick={() => setTelaAtiva('creditos')} className="font-bold text-xs md:text-sm tracking-widest hover:text-white transition-colors uppercase">
           Créditos
         </button>
       </aside>
 
-      {/* ÁREA DO CONTEÚDO PRINCIPAL */}
-      <main className="flex-1 min-h-screen bg-[#090a0b] relative overflow-y-auto">
-        <div className="w-full h-full">{renderizarTela()}</div>
+      <main className="app-main flex-1 min-h-screen relative overflow-y-auto overflow-x-hidden flex items-start justify-start bg-[#121315] p-4 md:p-8 md:items-center md:justify-center">
+        {renderTela()}
       </main>
 
+      {/* Botão móvel de voltar, fixo na base da janela e visível apenas no mobile. */}
+      {telaAtiva !== 'home' && mostrarBotaoMobile && typeof document !== 'undefined' && createPortal(
+        <div
+          className="md:hidden"
+          style={{
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'center',
+            paddingBottom: '1rem',
+            pointerEvents: 'none'
+          }}
+        >
+          <button
+            onClick={() => setTelaAtiva(voltarTela)}
+            style={{
+              pointerEvents: 'auto',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              borderRadius: '9999px',
+              backgroundColor: '#111827',
+              padding: '0.75rem 1.25rem',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              letterSpacing: '0.18em',
+              color: '#f8fafc',
+              boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              transition: 'background-color 0.2s ease'
+            }}
+          >
+            <span style={{ width: '0.625rem', height: '0.625rem', borderRadius: '9999px', backgroundColor: '#10b981' }} />
+            Voltar
+          </button>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

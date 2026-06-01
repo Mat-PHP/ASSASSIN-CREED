@@ -2,8 +2,6 @@ import React from 'react';
 import './Capitulos.css'; // Importa a folha de estilo separada de capítulos
 
 export default function Capitulos({ setTelaAtiva, faseAtual }) {
-  
-  // Lista com os 5 capítulos que você configurou no jogo
   const listaCapitulos = [
     { id: 1, titulo: "Capítulo 1: Sincronização de Mapas", desc: "Entre no Animus e encontre as coordenadas iniciais deixadas pelo seu ancestral." },
     { id: 2, titulo: "Capítulo 2: A Rede da Irmandade", desc: "Acesse os nodos criptografados para expandir a rede de comunicação." },
@@ -16,26 +14,19 @@ export default function Capitulos({ setTelaAtiva, faseAtual }) {
 
   return (
     <div className="capitulos-container select-none">
-      
-      {/* Título Principal */}
-      <h2 className="capitulos-titulo font-serif uppercase tracking-widest">
-        Arquivos de Memória
-      </h2>
+      <h2 className="capitulos-titulo font-serif uppercase tracking-widest">Arquivos de Memória</h2>
 
-      {/* Lista Vertical de Capítulos */}
       <div className="capitulos-lista">
         {listaCapitulos.map((cap) => {
-          // Bloqueia se o ID do capítulo for maior do que o progresso atual do App.jsx
           const bloqueado = cap.id > sequenciaAtual;
 
           return (
-            <div 
-              key={cap.id} 
+            <div
+              key={cap.id}
               className={`capitulo-card shadow-lg ${bloqueado ? 'capitulo-bloqueado' : 'capitulo-liberado'}`}
             >
               <div className="capitulo-header">
                 <h3 className="capitulo-nome font-serif">{cap.titulo}</h3>
-                
                 {bloqueado ? (
                   <span className="status-badge badge-trancado uppercase font-bold tracking-widest">Trancado</span>
                 ) : (
@@ -46,7 +37,7 @@ export default function Capitulos({ setTelaAtiva, faseAtual }) {
               <p className="capitulo-desc">{cap.desc}</p>
 
               {!bloqueado && (
-                <button 
+                <button
                   onClick={() => setTelaAtiva('mapa')}
                   className="capitulo-btn font-bold uppercase tracking-widest"
                 >
@@ -57,7 +48,6 @@ export default function Capitulos({ setTelaAtiva, faseAtual }) {
           );
         })}
       </div>
-
     </div>
   );
 }
